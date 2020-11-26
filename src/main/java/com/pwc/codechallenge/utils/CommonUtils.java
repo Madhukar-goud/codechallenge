@@ -10,7 +10,13 @@ import java.util.List;
 
 public class CommonUtils {
 
-    public static Person[] getPersonDetailsFromAddressBook(AddressBook addressBook, Comparator comparatorType) {
+    /**
+     * Validate the Address book and Person objects and sort them based on Comparator type
+     * @param addressBook
+     * @param comparatorType
+     * @return Array Of Person
+     */
+    public static Person[] getPersonDetailsFromAddressBook(AddressBook addressBook, Comparator<Person> comparatorType) {
         if (addressBook != null && !CollectionUtils.isEmpty(addressBook.getPersons())) {
             List<Person> personList = addressBook.getPersons();
             Collections.sort(personList, comparatorType);

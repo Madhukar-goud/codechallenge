@@ -24,37 +24,61 @@ public class AddressBookService {
         this.addressBookRepository = addressBookRepository;
     }
 
+    /**
+     * This method has the main logic for merging two address books.
+     * It assumes the two arrays that are passed are sorted.
+     * It loops through both the arrays and updates it to third array while removing any common elements
+     * We can pass in phone number comparator or name comparator and it removes accordingly
+     * @param personArray1
+     * @param personArray2
+     * @param comparatorType
+     * @return List of Person
+     */
     @LogExecutionTime
-    public List<Person> mergeAddressBooks(Person[] personArray1, Person[] personArray2, Comparator comparatorType) {
+    public List<Person> mergeAddressBooks(Person[] personArray1, Person[] personArray2, Comparator<Person> comparatorType) {
         int totalSize = personArray1.length + personArray2.length;
         Person[] allPersons = new Person[totalSize];
-        int i = 0;
-        int j = 0;
-        for (int k = 0; k < totalSize; k++) {
-            if (i > personArray1.length-1 &&  j > personArray2.length-1) {
+        int counterArray1 = 0;
+        int counterArray2 = 0;
+        for (int counterAuxArray = 0; counterAuxArray < totalSize; counterAuxArray++) {
+            if (counterArray1 > personArray1.length-1 &&  counterArray2 > personArray2.length-1) {
                 break;
-            } else if (i > personArray1.length-1) {
-                allPersons[k] = personArray2[j++];
-            } else if ( j > personArray2.length-1) {
-                allPersons[k] = personArray1[i++];
-            } else if (less(personArray2[j], personArray1[i], comparatorType) > 0) {
-                allPersons[k] = personArray1[i++];
-            } else if (less(personArray2[j], personArray1[i], comparatorType) < 0) {
-                allPersons[k] = personArray2[j++];
+            } else if (counterArray1 > personArray1.length-1) {
+                allPersons[counterAuxArray] = personArray2[counterArray2++];
+            } else if ( counterArray2 > personArray2.length-1) {
+                allPersons[counterAuxArray] = personArray1[counterArray1++];
+            } else if (less(personArray2[counterArray2], personArray1[counterArray1], comparatorType) > 0) {
+                allPersons[counterAuxArray] = personArray1[counterArray1++];
+            } else if (less(personArray2[counterArray2], personArray1[counterArray1], comparatorType) < 0) {
+                allPersons[counterAuxArray] = personArray2[counterArray2++];
             } else {
-                i++;
-                j++;
+                counterArray1++;
+                counterArray2++;
             }
         }
         return Arrays.stream(allPersons).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    public int less(Person person1, Person person2, Comparator comparator) {
-        return  comparator.compare(person1, person2);
+    /**
+     * Based on comparator type, the objects get compared and less of the two can be identified
+     * @param person1
+     * @param person2
+     * @param comparatorType
+     * @return
+     */
+    public int less(Person person1, Person person2, Comparator<Person> comparatorType) {
+        return  comparatorType.compare(person1, person2);
     }
 
+    /**
+     * Fetches data from the database for each address book name and does the required null checks and processing
+     * @param addressBookName1
+     * @param addressBookName2
+     * @param comparatorType
+     * @return AddressBook with List of Persons
+     */
     @LogExecutionTime
-    public AddressBook mergeAddressBooks(String addressBookName1, String addressBookName2, Comparator comparatorType) {
+    public AddressBook mergeAddressBooks(String addressBookName1, String addressBookName2, Comparator<Person> comparatorType) {
         AddressBook addressBooks1 = addressBookRepository.findAddressBookByName(addressBookName1);
         AddressBook addressBooks2 = addressBookRepository.findAddressBookByName(addressBookName2);
         Person[] person1 = CommonUtils.getPersonDetailsFromAddressBook(addressBooks1, comparatorType);

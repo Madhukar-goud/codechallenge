@@ -19,6 +19,10 @@ import java.util.Comparator;
 @Entity
 @Table(name = "person")
 public class Person implements Serializable, Comparable<Person>{
+    /**
+     * The Comparators can be used to easily switch between type
+     * of comparision we want to make
+     */
     public static final Comparator<Person> BY_NAME = new ByName();
     public static final Comparator<Person> BY_PHONE = new ByPhone();
 

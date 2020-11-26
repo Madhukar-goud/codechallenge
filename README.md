@@ -1,12 +1,15 @@
 ## Technologies Used
 
-Java, Spring boot, H2 Database that persists to file, Swagger-ui, Maven
+Java, Spring boot, H2 Database that persists to file, Swagger-ui, Maven, Jacoco
 ## Building the application
 You can use: `make build` or alternatively
 `mvn clean install`
 
 To run unit tests, you can do `make test` or alternatively
 `mvn clean test`
+
+The code coverage will be available at target/site/jacoco/index.html
+
 ## How to run the application
 You can use `make run` or alternatively
 `mvn spring-boot:run`

@@ -1,0 +1,13 @@
+package com.pwc.codechallenge.repository;
+
+import com.pwc.codechallenge.entity.Person;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface PersonRepository extends JpaRepository<Person, Integer> {
+    List<Person> findByAddressBookName(String name);
+    List<Person> findByAddressBookId(Integer id);
+}
